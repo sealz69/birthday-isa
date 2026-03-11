@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Gëzuar ditëlindjen ISAA! ❤️</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1a0a00, #000);
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+      color: #fff;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      touch-action: manipulation;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      color: #ff69b4;
+      text-shadow: 0 0 20px #ff1493;
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff1493, 0 0 20px #db7093; }
+      to   { text-shadow: 0 0 30px #ff69b4, 0 0 60px #c71585, 0 0 90px #db7093; }
+    }
+
+    #login-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: opacity 0.6s ease;
+    }
+
+    #login-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #password-input {
+      padding: 1rem 1.5rem;
+      font-size: 1.5rem;
+      border: 3px solid #ff1493;
+      border-radius: 12px;
+      background: #111;
+      color: white;
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+      margin: 1.5rem 0 1rem;
+    }
+
+    #submit-btn {
+      padding: 1rem 2.5rem;
+      font-size: 1.4rem;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #db7093, #ff69b4);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    #submit-btn:hover, #submit-btn:active {
+      transform: scale(1.08);
+      box-shadow: 0 0 25px #ff1493aa;
+    }
+
+    #error-message {
+      display: none;
+      color: #ff6666;
+      font-size: 1.4rem;
+      margin-top: 1.2rem;
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .cats-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .cat {
+      position: absolute;
+      width: 90px;
+      opacity: 0.16;
+      animation: rise linear infinite;
+      will-change: transform;
+    }
+
+    @keyframes rise {
+      0%   { transform: translateY(110vh) rotate(0deg); }
+      50%  { transform: translateY(20vh) translateX(30px) rotate(180deg); }
+      100% { transform: translateY(-50vh) translateX(-50px) rotate(720deg); }
+    }
+
+    #main-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      z-index: 10;
+      position: relative;
+    }
+
+    #main-content.visible {
+      opacity: 1;
+    }
+
+    #cake, #gift {
+      font-size: clamp(5rem, 18vw, 9rem);
+      margin: 1.5rem 0;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.3s;
+      touch-action: none; /* Prevents scrolling/zoom while holding on mobile */
+    }
+
+    #cake:hover, #gift:hover, #cake:active, #gift:active {
+      transform: scale(1.15);
+    }
+
+    #surprise {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      color: #ffb6c1;
+      margin: 2rem 1rem;
+      min-height: 3rem;
+      letter-spacing: 1px;
+    }
+
+    /* Continuous slow hearts */
+    .heart {
+      position: fixed;
+      top: -50px;
+      font-size: 20px;
+      color: red;
+      animation: fallHeart linear infinite;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @keyframes fallHeart {
+      0%   { transform: translateY(-50px) rotate(0deg); opacity:1; }
+      50%  { transform: translateY(50vh) rotate(180deg); opacity:0.8; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity:0; }
+    }
+
+    #blow-prompt {
+      display: none;
+      position: fixed;
+      bottom: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      padding: 1rem 2rem;
+      border-radius: 20px;
+      font-size: 1.2rem;
+      z-index: 50;
+      max-width: 90%;
+    }
+
+    #gift {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    #gift.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #sad-cat {
+      display: none;
+      max-width: 200px;
+      margin-top: 1rem;
+      animation: shake 0.4s;
+    }
+
+    #klik-text {
+      font-size: 1rem;
+      color: #ffb6c1;
+      margin-top: 0.3rem;
+    }
+
+    #progress-container {
+      display: none;
+      position: fixed;
+      bottom: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(250px, 85vw);
+      height: 25px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 20px;
+      overflow: hidden;
+      z-index: 50;
+      box-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+      border: 1px solid #ff69b4;
+    }
+
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #ff69b4, #ff1493);
+      transition: width 0.05s ease-out;
+      box-shadow: 0 0 15px #ff1493;
+    }
+  </style>
+</head>
+<body>
+
+<div class="cats-container" id="cats"></div>
+
+<audio id="birthday-song" loop preload="auto">
+  <source src="song.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<div id="login-screen">
+  <h2>MIRË SE ERDHE ISA!!</h2>
+  <input id="password-input" placeholder="Shkruaj password këtu..." autocomplete="off" autofocus/>
+  <div style="margin:0.8rem 0; opacity:0.7;">Hint : kushoja me i mir</div>
+  <button id="submit-btn">Hap Surprizën</button>
+  <div id="error-message">KUSH OSHT AI TJETRI? 🥺</div>
+  <img id="sad-cat" src="https://www.pngitem.com/pimgs/m/410-4106383_cat-cry-crycat-sad-sadcat-transparent-sad-crying.png" alt="Sad cat">
+</div>
+
+<div id="main-content">
+  <h1>HAPPY BIRTHDAY ISAA!!!</h1>
+  <div id="cake">🎂🕯🕯🕯🕯</div>
+  <div style="position: relative; display: inline-block; margin-top: 1rem;">
+    <div id="gift">✉️</div>
+    <div id="klik-text">Klikoje</div>
+  </div>
+  <div id="surprise"></div>
+</div>
+
+<div id="blow-prompt">Mbaj shtypur në tortë për të fikur qirinjtë! 💨</div>
+<div id="progress-container"><div id="progress-bar"></div></div>
+
+<script>
+  // FULLSCREEN (fixed for mobile + Safari/Chrome)
+  function goFullscreen() {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    }
+  }
+
+  const VALID_PASSWORDS = ["david", "davidi"];
+  const audio = document.getElementById("birthday-song");
+  const loginScreen = document.getElementById("login-screen");
+  const mainContent = document.getElementById("main-content");
+  const errorMsg = document.getElementById("error-message");
+  const blowPrompt = document.getElementById("blow-prompt");
+  const progressContainer = document.getElementById("progress-container");
+  const progressBar = document.getElementById("progress-bar");
+  const gift = document.getElementById("gift");
+  const klikText = document.getElementById("klik-text");
+  const sadCat = document.getElementById("sad-cat");
+  const cake = document.getElementById("cake");
+
+  const sadCats = [
+    "https://www.vhv.rs/dpng/d/422-4220140_hd-cryingcat-181-kb-crying-cat-meme-png.png",
+    "https://www.kindpng.com/picc/m/104-1047042_cryingcat-181-kb-crying-cat-meme-png-transparent.png"
+  ];
+
+  const messages = [
+    "JE KUSHËRIRA MË E MIRË NË BOTË DHE DUA TË TË THEM SA SHUMË DO TË THOTË PËR MUA. TË DUA SHUMË DHE JAM SHUMË ME FAT QË TË KAM NË JETËN TIME. TI JE GJITHMONË E DASHUR, E MIRË DHE PLOT ZEMËR, DHE ÇDO MOMENT ME TY ËSHTË I VEÇANTË. SHPRESOJ QË DITA JOTE TË JETË E MBUSHUR ME GËZIM, BUZËQESHJE DHE SHUMË MOMENTE TË BUKURA. MOS HARRO KURRË SA E VEÇANTË JE DHE SA SHUMË TË VLERËSOJ. TË UROJ NJË DITË TË MREKULLUESHME DHE PLOT DASHURI. ❤️",
+  ];
+
+  function checkPassword() {
+    const input = document.getElementById("password-input").value.trim().toLowerCase();
+    if (VALID_PASSWORDS.includes(input)) {
+      // Trigger fullscreen IMMEDIATELY (still inside user gesture → works on mobile!)
+      goFullscreen();
+
+      loginScreen.classList.add("hidden");
+      setTimeout(() => {
+        loginScreen.style.display = "none";
+        mainContent.style.display = "block";
+        setTimeout(() => mainContent.classList.add("visible"), 100);
+
+        audio.volume = 0;
+        audio.play().catch(() => console.log("Autoplay blocked"));
+        const fade = setInterval(() => {
+          if (audio.volume < 0.45) audio.volume += 0.025;
+          else clearInterval(fade);
+        }, 140);
+
+        blowPrompt.style.display = "block";
+      }, 700);
+    } else {
+      sadCat.src = sadCats[Math.floor(Math.random() * sadCats.length)];
+      errorMsg.style.display = "block";
+      sadCat.style.display = "block";
+      setTimeout(() => {
+        errorMsg.style.display = "none";
+        sadCat.style.display = "none";
+      }, 2000);
+    }
+  }
+
+  document.getElementById("submit-btn").onclick = checkPassword;
+  document.getElementById("password-input").onkeypress = e => { if(e.key==="Enter") checkPassword(); };
+
+  function createCats() {
+    const container = document.getElementById("cats");
+    const images = [
+      "https://pngimg.com/d/cat_PNG50545.png",
+      "https://www.pngkey.com/png/full/763-7637449_tabby-cat-clipart-ginger-cat-orange-cat.png"
+    ];
+    for (let i = 0; i < 20; i++) {
+      const img = document.createElement("img");
+      img.src = images[Math.floor(Math.random() * images.length)];
+      img.className = "cat";
+      img.style.left = Math.random() * 100 + "%";
+      img.style.animationDuration = (28 + Math.random() * 45) + "s";
+      img.style.animationDelay = Math.random() * 15 + "s";
+      container.appendChild(img);
+    }
+  }
+
+  let candlesLit = true;
+  let progress = 0;
+  let rafId;
+  let candleEmojis = ['🕯','🕯','🕯','🕯'];
+  const initialCandles = 4;
+  const duration = 5000;
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function updateCake() {
+    cake.innerHTML = '🎂' + candleEmojis.join('');
+  }
+
+  let startTime;
+
+  function animateProgress(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = timestamp - startTime;
+    const fraction = Math.min(elapsed / duration, 1);
+    const easedFraction = easeOutCubic(fraction);
+    progress = easedFraction * 100;
+    progressBar.style.width = progress + '%';
+
+    const shouldHave = initialCandles - Math.floor(easedFraction * initialCandles);
+    while (candleEmojis.length > shouldHave) {
+      candleEmojis.pop();
+      updateCake();
+    }
+
+    if (fraction < 1) {
+      rafId = requestAnimationFrame(animateProgress);
+    } else {
+      blowOutCandles();
+      progressContainer.style.display = 'none';
+      blowPrompt.style.display = 'none';
+    }
+  }
+
+  function startBlow(e) {
+    if (!candlesLit) return;
+    e.preventDefault();
+    progress = 0;
+    startTime = null;
+    progressBar.style.width = '0%';
+    candleEmojis = ['🕯','🕯','🕯','🕯'];
+    updateCake();
+    progressContainer.style.display = 'block';
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(animateProgress);
+  }
+
+  function stopBlow(e) {
+    e.preventDefault();
+    cancelAnimationFrame(rafId);
+    progress = 0;
+    progressBar.style.width = '0%';
+    progressContainer.style.display = 'none';
+    if (candlesLit) {
+      candleEmojis = ['🕯','🕯','🕯','🕯'];
+      updateCake();
+    }
+  }
+
+  // Touch + mouse support (mobile fixed)
+  cake.addEventListener('mousedown', startBlow);
+  cake.addEventListener('touchstart', startBlow, { passive: false });
+  document.addEventListener('mouseup', stopBlow);
+  document.addEventListener('touchend', stopBlow, { passive: false });
+
+  function blowOutCandles() {
+    if (candlesLit) {
+      cake.innerHTML = "";
+      alert("Bëj një dëshirë ISAA! 🎂");
+      candlesLit = false;
+      gift.classList.add("active");
+    }
+  }
+
+  function createHearts(numHearts=20){
+    for(let i=0;i<numHearts;i++){
+      const h=document.createElement("div");
+      h.className="heart";
+      h.style.left=Math.random()*100+"vw";
+      h.style.fontSize=(15+Math.random()*20)+"px";
+      h.style.animationDuration=(10+Math.random()*10)+"s";
+      h.style.animationDelay=Math.random()*10+"s";
+      h.innerHTML="❤️";
+      document.body.appendChild(h);
+    }
+  }
+
+  function typeMessage(){
+    const text=messages[Math.floor(Math.random()*messages.length)];
+    const container=document.getElementById("surprise");
+    container.innerHTML="";
+    let i=0;
+    const typing=setInterval(()=>{
+      container.innerHTML+=text[i];
+      i++;
+      if(i>=text.length) clearInterval(typing);
+    },70);
+  }
+
+  gift.onclick = () => {
+    if(gift.classList.contains("active")){
+      document.getElementById("gift").innerHTML="";
+      klikText.style.display = "none";
+      typeMessage();
+    }
+  }
+
+  window.onload = () => {
+    createCats();
+    createHearts(20);
+    document.getElementById("password-input").focus();
+  };
+</script>
+
+</body>
+</html>
