@@ -182,19 +182,6 @@ function typeMessage(){const text=messages[0]; const container=document.getEleme
 gift.addEventListener("pointerdown",()=>{if(gift.classList.contains("active")){gift.innerHTML=""; klikText.style.display="none"; typeMessage();}})
 
 window.onload=()=>{createCats(); createHearts(20); document.getElementById("password-input").focus();}
-
-  <style>
-/* your existing CSS here ... */
-
-/* --- MOBILE FULLSCREEN/ZOOM FIX --- */
-input, button {
-  font-size: 16px; /* prevent iOS from zooming on input focus */
-}
-html, body {
-  overscroll-behavior: none; /* prevent Android from stretching/scrolling fullscreen */
-  touch-action: manipulation; /* prevent mobile gesture fullscreen */
-}
-</style>
   
 </script>
 
