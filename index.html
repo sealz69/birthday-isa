@@ -107,7 +107,7 @@ const klikText=document.getElementById("klik-text");
 const cake=document.getElementById("cake");
 const progressBar=document.getElementById("progress-bar");
 const progressContainer=document.getElementById("progress-container");
-const messages=["JE KUSHËRIRA MË E MIRË NË BOTË DHE DUA TË TË THEM SA SHUMË DO TË THOTË PËR MUA. TË DUA SHUMË ❤️"];
+const messages=["JE KUSHËRIRA MË E MIRË NË BOTË DHE DUA TË TË THEM SA SHUMË DO TË THOTË PËR MUA. TË DUA SHUMË DHE JAM SHUMË ME FAT QË TË KAM NË JETËN TIME. TI JE GJITHMONË E DASHUR, E MIRË DHE PLOT ZEMËR, DHE ÇDO MOMENT ME TY ËSHTË I VEÇANTË. SHPRESOJ QË DITA JOTE TË JETË E MBUSHUR ME GËZIM, BUZËQESHJE DHE SHUMË MOMENTE TË BUKURA. MOS HARRO KURRË SA E VEÇANTË JE DHE SA SHUMË TË VLERËSOJ. TË UROJ NJË DITË TË MREKULLUESHME DHE PLOT DASHURI. ❤️"];
 let candlesLit=true, progress=0, rafId, candleEmojis=['🕯','🕯','🕯','🕯'], initialCandles=4, duration=5000;
 
 function checkPassword(){
@@ -153,7 +153,7 @@ function createHearts(numHearts=20){
   }
 }
 
-function updateCake(){cake.innerHTML='🎂'+candleEmojis.join('');}
+function updateCake(){cake.innerHTML=''+candleEmojis.join('');}
 function easeOutCubic(t){return 1-Math.pow(1-t,3);}
 
 let startTime=null;
